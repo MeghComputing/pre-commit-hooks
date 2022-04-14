@@ -1,0 +1,5 @@
+- id: copyrighter
+  name: copyrighter
+  description: Detects copyright header errors in source files.
+  language: script
+  entry: copyrighter/copyrighter.py
