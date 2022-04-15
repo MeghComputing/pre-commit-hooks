@@ -6,9 +6,10 @@
 import datetime
 import os
 
-import copyrighter
 import pytest
 from pyparsing import alphanums
+
+import copyrighter
 
 copyright_megh_python = """{0}\
 # Copyright (c) {1} Megh Computing, Inc.
@@ -191,19 +192,19 @@ def test_parse_bad_format(optional_shebang: str):
 
     # Turn off psf/black (linting) autoformatting
     # fmt: off
-    #                              correct  f"{optional_shebang}\n\nCopyright (c) 2020-{current_year} Megh Computing, Inc."  # noqa: E501  # (ignore flake8 line too long)
-    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright 2020-{current_year} Megh Computing, Inc.") == (None, None)  # noqa: E501
-    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright (c) 200-{current_year} Megh Computing, Inc.") == (None, None)  # noqa: E501
-    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright (c) 2020-223 Megh Computing, Inc.") == (None, None)  # noqa: E501
-    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright(c) 2020-{current_year} Megh Computing, Inc.") == (None, None)  # noqa: E501
-    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright (c) 2020-{current_year} Meg Computing, Inc.") == (None, None)  # noqa: E501
+    #                              correct  f"{optional_shebang}\n\nCopyright (c) 2020-{current_year} Megh Computing, Inc."
+    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright 2020-{current_year} Megh Computing, Inc.") == (None, None)
+    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright (c) 200-{current_year} Megh Computing, Inc.") == (None, None)
+    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright (c) 2020-223 Megh Computing, Inc.") == (None, None)
+    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright(c) 2020-{current_year} Megh Computing, Inc.") == (None, None)
+    assert copyrighter.parse_copyright_megh(f"{optional_shebang}\n\nCopyright (c) 2020-{current_year} Meg Computing, Inc.") == (None, None)
 
-    #                              correct:   f"{optional_shebang}\n\nCopyright 2020-{current_year} Megh Computing, Inc."  # noqa: E501
-    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright (c) 2020-{current_year} Megh Computing, Inc.") == (None, None)  # noqa: E501
-    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright 200-{current_year} Megh Computing, Inc.") == (None, None)  # noqa: E501
-    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright 2020-223 Megh Computing, Inc.") == (None, None)  # noqa: E501
-    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright2020-{current_year} Megh Computing, Inc.") == (None, None)  # noqa: E501
-    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright 2020-{current_year} Meg Computing, Inc.") == (None, None)  # noqa: E501
+    #                              correct:   f"{optional_shebang}\n\nCopyright 2020-{current_year} Megh Computing, Inc."
+    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright (c) 2020-{current_year} Megh Computing, Inc.") == (None, None)
+    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright 200-{current_year} Megh Computing, Inc.") == (None, None)
+    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright 2020-223 Megh Computing, Inc.") == (None, None)
+    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright2020-{current_year} Megh Computing, Inc.") == (None, None)
+    assert copyrighter.parse_copyright_apache(f"{optional_shebang}\n\nCopyright 2020-{current_year} Meg Computing, Inc.") == (None, None)
     # fmt: on
 
 
@@ -320,27 +321,21 @@ class TestCheckFile:
             mocker.patch("copyrighter.read_tombstone", return_value=given)
             mocker.patch("copyrighter.write_current_year")
             assert copyrighter.check_file([".py"], self.filename, autofix=True) is False
-            copyrighter.write_current_year.assert_called_once_with(
-                self.filename, 2017, self.current_year
-            )
+            copyrighter.write_current_year.assert_called_once_with(self.filename, 2017, self.current_year)
 
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, "2020-2021")
             mocker.patch("copyrighter.read_tombstone", return_value=given)
             mocker.patch("copyrighter.write_current_year")
             assert copyrighter.check_file([".py"], self.filename, autofix=True) is False
-            copyrighter.write_current_year.assert_called_once_with(
-                self.filename, 2020, self.current_year
-            )
+            copyrighter.write_current_year.assert_called_once_with(self.filename, 2020, self.current_year)
 
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, "2020-2071")
             mocker.patch("copyrighter.read_tombstone", return_value=given)
             mocker.patch("copyrighter.write_current_year")
             assert copyrighter.check_file([".py"], self.filename, autofix=True) is False
-            copyrighter.write_current_year.assert_called_once_with(
-                self.filename, 2020, self.current_year
-            )
+            copyrighter.write_current_year.assert_called_once_with(self.filename, 2020, self.current_year)
 
     def test_check_file_ext_list(self):
         assert copyrighter.check_file([".x"], self.filename, autofix=False) is True

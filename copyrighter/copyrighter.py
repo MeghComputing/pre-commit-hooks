@@ -132,10 +132,7 @@ def check_file(extensions: list, filepath: str, autofix: bool) -> bool:
 
     if start_year > end_year:
         print(f"Copyright header check failed for file: {filepath}")
-        print(
-            f"File header copyright start year {start_year} must be smaller than "
-            f"end year {end_year}."
-        )
+        print(f"File header copyright start year {start_year} must be smaller than " f"end year {end_year}.")
         return False
 
     if end_year != current_year:
@@ -218,16 +215,13 @@ def make_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="If given, automatically update the copyright year to the current year.",
     )
-    parser.add_argument(
-        "filename", help="The path(s) of the file(s) to check.", nargs="+", default=[]
-    )
+    parser.add_argument("filename", help="The path(s) of the file(s) to check.", nargs="+", default=[])
     parser.add_argument("-v", "--verbose", action="store_true", help="Print more context.")
     parser.add_argument(
         "-e",
         "--extensions",
         default=None,
-        help="The path of a file with a list of extensions to check.\n"
-        f"Defaults: {', '.join(default_extensions)}.",
+        help="The path of a file with a list of extensions to check.\n" f"Defaults: {', '.join(default_extensions)}.",
     )
     return parser
 
