@@ -3,7 +3,7 @@ name: Unit Tests
 on:
   pull_request:
   push:
-    branches: [main, develop, feature/copyrighter]
+    branches: [main, develop]
 
 jobs:
   test:
@@ -13,12 +13,6 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        #token: ${{ secrets.GITHUB_TOKEN }}
-    #- uses: tibdex/github-app-token@v1
-    #  id: generate-analytics-lib-tokens
-    #  with:
-    #    app_id: ${{ secrets.MEGH_AGENT_APP_ID }}
-    #    private_key: ${{ secrets.MEGH_AGENT_PRIVATE_KEY }}
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
