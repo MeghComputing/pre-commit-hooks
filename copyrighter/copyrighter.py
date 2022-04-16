@@ -63,6 +63,7 @@ def write_current_year(filepath: str, start_year: int, current_year: int):
 
 
 def parse_copyright_megh(lines: str) -> tuple:
+    """Return the start year and end year of the copyright header. If there is no range, start year will equal end year."""
     copyright_regex_megh = R"Copyright \(c\) 20\d\d(-20\d\d)? Megh Computing, Inc."
     match = re.search(copyright_regex_megh, lines)
     if not match:
@@ -75,6 +76,7 @@ def parse_copyright_megh(lines: str) -> tuple:
 
 
 def parse_copyright_apache(lines: str) -> tuple:
+    """Return the start year and end year of the copyright header. If there is no range, start year will equal end year."""
     copyright_regex_apache = R"Copyright 20\d\d(-20\d\d)? Megh Computing, Inc."
     match = re.search(copyright_regex_apache, lines)
     if not match:
