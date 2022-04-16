@@ -1,0 +1,37 @@
+name: Unit Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop, feature/copyrighter]
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        #token: ${{ secrets.GITHUB_TOKEN }}
+    #- uses: tibdex/github-app-token@v1
+    #  id: generate-analytics-lib-tokens
+    #  with:
+    #    app_id: ${{ secrets.MEGH_AGENT_APP_ID }}
+    #    private_key: ${{ secrets.MEGH_AGENT_PRIVATE_KEY }}
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - name: Install system dependencies
+      run: |
+        sudo apt-get -y update
+        pip install --upgrade pip
+        pip install pytest pytest-mock
+    - name: Run unit tests
+      run: pytest --junitxml=pytest.xml
+    - name: Publish unit test results
+      if: always()
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      with:
+        files: pytest.xml
