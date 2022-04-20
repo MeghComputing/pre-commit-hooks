@@ -13,6 +13,11 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
+    - name: Note changed files
+      # The first command, if it fails, causes the entire job to fail. This is desired, because it would otherwise pass silently.
+      run: |
+        git diff --name-only --no-ext-diff -z origin/${{github.base_ref}}
+        echo "touched_files=$(git diff --name-only --no-ext-diff -z origin/${{github.base_ref}} | xargs --null)" >> $GITHUB_ENV
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -21,4 +26,4 @@ jobs:
       uses: pre-commit/action@v2.0.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        extra_args: --from-ref origin/develop --to-ref HEAD
+        extra_args: --files ${{ env.touched_files }}
