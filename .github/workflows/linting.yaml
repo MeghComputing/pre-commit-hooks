@@ -17,10 +17,8 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.6
-    - name: Install system dependencies
-      run: |
-        pip install --upgrade pip
     - name: pre-commit
       uses: pre-commit/action@v2.0.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        extra_args: --from-ref origin/develop --to-ref HEAD

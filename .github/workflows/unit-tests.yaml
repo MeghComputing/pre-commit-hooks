@@ -10,16 +10,13 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+      uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: 3.6
     - name: Install system dependencies
       run: |
-        sudo apt-get -y update
         pip install --upgrade pip
         pip install pytest pytest-mock
     - name: Run unit tests

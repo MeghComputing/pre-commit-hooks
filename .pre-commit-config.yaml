@@ -56,5 +56,4 @@ repos:
     rev: v2022.1
     hooks:
       - id: copyrighter
-        exclude: __init__.py
         args: [--fix]
