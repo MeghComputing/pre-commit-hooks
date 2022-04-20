@@ -46,12 +46,6 @@ repos:
         name: bandit (on unit tests)
         files: /test_.*\.
         args: [-s, B101]  # Ignore assert_used on unit tests.
-  - repo: https://github.com/jazzband/pip-tools
-    rev: 6.4.0
-    hooks:
-      - id: pip-compile
-        entry: pip-compile-wrapper/pip-compile-wrapper.py
-        always_run: true
   - repo: https://github.com/MeghComputing/pre-commit-hooks
     rev: v2022.1
     hooks:
