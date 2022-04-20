@@ -99,6 +99,10 @@ def check_file(extensions: list, filepath: str, autofix: bool) -> bool:
             print(f"File extension not on to-check list: {filepath} (automatic success)")
         return True
 
+    # Ignore __init__.py files.
+    if os.path.basename(filepath) == "__init__.py":
+        return True
+
     # Read the file's tombstone.
     try:
         with open(filepath, "r") as file:
