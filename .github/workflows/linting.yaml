@@ -1,0 +1,35 @@
+name: Linting
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+    - uses: tibdex/github-app-token@v1
+      id: generate-token
+      with:
+        app_id: ${{ secrets.PRE_COMMIT_AGENT_APP_ID }}
+        private_key: ${{ secrets.PRE_COMMIT_AGENT_PRIVATE_KEY }}
+    - name: Note changed files
+      # The first command, if it fails, causes the entire job to fail. This is desired, because it would otherwise pass silently.
+      run: |
+        git diff --name-only --no-ext-diff -z origin/${{ github.base_ref }}
+        echo "touched_files=$(git diff --name-only --no-ext-diff -z origin/${{ github.base_ref }} | xargs --null)" >> $GITHUB_ENV
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - name: pre-commit
+      uses: pre-commit/action@v2.0.3
+      with:
+        token: ${{ steps.generate-token.outputs.token }}
+        extra_args: --files ${{ env.touched_files }}
