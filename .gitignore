@@ -1,0 +1,23 @@
+# VS Code
+.settings/
+**/.vscode/
+*.code-workspace
+
+# Eclipse
+.cproject
+.settings
+
+# PyCharm / IntelliJ
+.idea
+
+# Python
+.env/
+__pycache__/
+
+# Other
+*.swp
+/.metadata/
+
+# Docker
+/build-*
+Dockerfile
