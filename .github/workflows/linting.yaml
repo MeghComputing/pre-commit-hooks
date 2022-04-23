@@ -19,11 +19,16 @@ jobs:
       with:
         app_id: ${{ secrets.PRE_COMMIT_AGENT_APP_ID }}
         private_key: ${{ secrets.PRE_COMMIT_AGENT_PRIVATE_KEY }}
-    - name: Note changed files
-      # The first command, if it fails, causes the entire job to fail. This is desired, because it would otherwise pass silently.
-      run: |
-        git diff --name-only --no-ext-diff -z origin/${{ github.base_ref }}
-        echo "touched_files=$(git diff --name-only --no-ext-diff -z origin/${{ github.base_ref }} | xargs --null)" >> $GITHUB_ENV
+    # - name: Note changed files
+    #   # The first command, if it fails, causes the entire job to fail. This is desired, because it would otherwise pass silently.
+    #   run: |
+    #     git diff --name-only --no-ext-diff -z origin/${{ github.base_ref }}
+    #     echo "touched_files=$(git diff --name-only --no-ext-diff -z origin/${{ github.base_ref }} | xargs --null)" >> $GITHUB_ENV
+    - id: file_changes
+      uses: trilom/file-changes-action@v1.2.4
+      with:
+        output: ' '
+        token: ${{ steps.generate-token.outputs.token }}
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -32,4 +37,4 @@ jobs:
       uses: pre-commit/action@v2.0.3
       with:
         token: ${{ steps.generate-token.outputs.token }}
-        extra_args: --files ${{ env.touched_files }}
+        extra_args: --files ${{ steps.file_changes.outputs.files_added }} ${{ steps.file_changes.outputs.files_modified }}
