@@ -28,7 +28,6 @@ jobs:
       uses: trilom/file-changes-action@v1.2.4
       with:
         output: ' '
-        token: ${{ steps.generate-token.outputs.token }}
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
