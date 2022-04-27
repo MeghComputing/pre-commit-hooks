@@ -47,7 +47,6 @@ repos:
         files: /test_.*\.
         args: [-s, B101]  # Ignore assert_used on unit tests.
   - repo: https://github.com/MeghComputing/pre-commit-hooks
-    rev: "2022.1"
+    rev: "2022.2"
     hooks:
       - id: copyrighter
-        args: [--fix]
