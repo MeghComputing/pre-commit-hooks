@@ -18,7 +18,7 @@ jobs:
     - name: Install system dependencies
       run: |
         pip install --upgrade pip
-        pip install pytest pytest-mock
+        pip install '.[test]'
     - name: Run unit tests
       run: pytest --junitxml=pytest.xml
     - name: Publish unit test results

@@ -12,6 +12,7 @@
 
 # Python
 .env/
+env/
 __pycache__/
 
 # Other

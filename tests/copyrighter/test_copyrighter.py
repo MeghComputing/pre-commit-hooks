@@ -9,7 +9,9 @@ import os
 import pytest
 from pyparsing import alphanums
 
-import copyrighter
+from megh_pch.copyrighter import copyrighter
+
+import_base = "megh_pch.copyrighter.copyrighter."
 
 copyright_megh_python = """{0}\
 # Copyright (c) {1} Megh Computing, Inc.
@@ -212,8 +214,8 @@ def test_parse_bad_format(optional_shebang: str):
 def test_write_year_1(mocker, optional_shebang):
     given = copyright_megh_python.format(optional_shebang, "2021").split("\n")
     expected = copyright_megh_python.format(optional_shebang, "2021-2022").split("\n")
-    mocker.patch("copyrighter.read_file", return_value=given)
-    mocker.patch("copyrighter.write_file")
+    mocker.patch(f"{import_base}read_file", return_value=given)
+    mocker.patch(f"{import_base}write_file")
     copyrighter.write_current_year("", 2021, 2022)
     copyrighter.write_file.assert_called_once_with("", expected)
 
@@ -222,8 +224,8 @@ def test_write_year_1(mocker, optional_shebang):
 def test_write_year_2(mocker, optional_shebang):
     given = copyright_apache_python.format(optional_shebang, "2020").split("\n")
     expected = copyright_apache_python.format(optional_shebang, "1912-1954").split("\n")
-    mocker.patch("copyrighter.read_file", return_value=given)
-    mocker.patch("copyrighter.write_file")
+    mocker.patch(f"{import_base}read_file", return_value=given)
+    mocker.patch(f"{import_base}write_file")
     copyrighter.write_current_year("", 1912, 1954)
     copyrighter.write_file.assert_called_once_with("", expected)
 
@@ -232,8 +234,8 @@ def test_write_year_2(mocker, optional_shebang):
 def test_write_year_3(mocker, optional_shebang):
     given = copyright_megh_cpp.format(optional_shebang, "2021-2022").split("\n")
     expected = copyright_megh_cpp.format(optional_shebang, "1903-1995").split("\n")
-    mocker.patch("copyrighter.read_file", return_value=given)
-    mocker.patch("copyrighter.write_file")
+    mocker.patch(f"{import_base}read_file", return_value=given)
+    mocker.patch(f"{import_base}write_file")
     copyrighter.write_current_year("", 1903, 1995)
     copyrighter.write_file.assert_called_once_with("", expected)
 
@@ -242,8 +244,8 @@ def test_write_year_3(mocker, optional_shebang):
 def test_write_year_4(mocker, optional_shebang):
     given = copyright_apache_cpp.format(optional_shebang, "2017").split("\n")
     expected = copyright_apache_cpp.format(optional_shebang, "1906-1992").split("\n")
-    mocker.patch("copyrighter.read_file", return_value=given)
-    mocker.patch("copyrighter.write_file")
+    mocker.patch(f"{import_base}read_file", return_value=given)
+    mocker.patch(f"{import_base}write_file")
     copyrighter.write_current_year("", 1906, 1992)
     copyrighter.write_file.assert_called_once_with("", expected)
 
@@ -255,8 +257,8 @@ def test_write_year_5(mocker, optional_shebang):
     given = copyright_megh_python.format(optional_shebang, "2021").split("\n") + body
     expected = copyright_megh_python.format(optional_shebang, "2021-2022").split("\n") + body
 
-    mocker.patch("copyrighter.read_file", return_value=given)
-    mocker.patch("copyrighter.write_file")
+    mocker.patch(f"{import_base}read_file", return_value=given)
+    mocker.patch(f"{import_base}write_file")
     copyrighter.write_current_year("", 2021, 2022)
     copyrighter.write_file.assert_called_once_with("", expected)
 
@@ -277,63 +279,63 @@ class TestCheckFile:
     def test_check_file(self, mocker, optional_shebang):
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, self.current_year)
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
             assert copyrighter.check_file([".py"], self.filename, autofix=False) is True
 
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, f"2017-{self.current_year}")
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
             assert copyrighter.check_file([".py"], self.filename, autofix=False) is True
 
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, f"207-{self.current_year}")
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
             assert copyrighter.check_file([".py"], self.filename, autofix=False) is False
 
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, f"blah-{self.current_year}")
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
             assert copyrighter.check_file([".py"], self.filename, autofix=False) is False
 
     @pytest.mark.parametrize(*shebang_params)
     def test_check_file_future_year(self, mocker, optional_shebang):
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, "2071")
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
             assert copyrighter.check_file([".py"], self.filename, autofix=False) is False
 
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, f"2071-{self.current_year}")
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
             assert copyrighter.check_file([".py"], self.filename, autofix=False) is False
 
     @pytest.mark.parametrize(*shebang_params)
     def test_check_file_backward_year(self, mocker, optional_shebang):
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, "2021-2017")
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
             assert copyrighter.check_file([".py"], self.filename, autofix=False) is False
 
     @pytest.mark.parametrize(*shebang_params)
     def test_check_file_auto_fix(self, mocker, optional_shebang):
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, "2017")
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
-            mocker.patch("copyrighter.write_current_year")
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}write_current_year")
             assert copyrighter.check_file([".py"], self.filename, autofix=True) is False
             copyrighter.write_current_year.assert_called_once_with(self.filename, 2017, self.current_year)
 
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, "2020-2021")
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
-            mocker.patch("copyrighter.write_current_year")
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}write_current_year")
             assert copyrighter.check_file([".py"], self.filename, autofix=True) is False
             copyrighter.write_current_year.assert_called_once_with(self.filename, 2020, self.current_year)
 
         for copyright in (copyright_megh_python, copyright_apache_python):
             given = copyright.format(optional_shebang, "2020-2071")
-            mocker.patch("copyrighter.read_tombstone", return_value=given)
-            mocker.patch("copyrighter.write_current_year")
+            mocker.patch(f"{import_base}read_tombstone", return_value=given)
+            mocker.patch(f"{import_base}write_current_year")
             assert copyrighter.check_file([".py"], self.filename, autofix=True) is False
             copyrighter.write_current_year.assert_called_once_with(self.filename, 2020, self.current_year)
 
@@ -349,27 +351,27 @@ class TestExtensions:
 
     def test_good(self, mocker):
         file_lines = [".py\n", ".cpp\n", " \n", "\t\n", "\n", ".\n"]
-        mocker.patch("copyrighter.read_file", return_value=file_lines)
+        mocker.patch(f"{import_base}read_file", return_value=file_lines)
         assert copyrighter.get_extensions(self.filename) == [".py", ".cpp", "."]
 
     def test_empty(self, mocker):
         file_lines = [""]
-        mocker.patch("copyrighter.read_file", return_value=file_lines)
+        mocker.patch(f"{import_base}read_file", return_value=file_lines)
         assert not copyrighter.get_extensions(self.filename)
 
         file_lines = ["\n", "\t\n", "  \n"]
-        mocker.patch("copyrighter.read_file", return_value=file_lines)
+        mocker.patch(f"{import_base}read_file", return_value=file_lines)
         assert not copyrighter.get_extensions(self.filename)
 
     def test_bad_extension(self, mocker):
         file_lines = ["x.py\n"]
-        mocker.patch("copyrighter.read_file", return_value=file_lines)
+        mocker.patch(f"{import_base}read_file", return_value=file_lines)
         assert not copyrighter.get_extensions(self.filename)
 
         file_lines = ["py\n"]
-        mocker.patch("copyrighter.read_file", return_value=file_lines)
+        mocker.patch(f"{import_base}read_file", return_value=file_lines)
         assert not copyrighter.get_extensions(self.filename)
 
         file_lines = ["x.\n"]
-        mocker.patch("copyrighter.read_file", return_value=file_lines)
+        mocker.patch(f"{import_base}read_file", return_value=file_lines)
         assert not copyrighter.get_extensions(self.filename)
