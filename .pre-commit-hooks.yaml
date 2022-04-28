@@ -3,3 +3,4 @@
   description: Detects copyright header errors in source files.
   language: python
   entry: copyrighter
+  args: [--fix]
